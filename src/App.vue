@@ -1,15 +1,18 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-07-26 21:21:06
+ * @LastEditTime: 2021-07-26 21:36:57
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /vue-admin/src/App.vue
+-->
 <template>
-  <div id="nav"><router-link to="/"></router-link> |</div>
   <router-view />
 </template>
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  height: 100%;
 }
 
 #nav {
