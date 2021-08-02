@@ -12,3 +12,9 @@ export function validEmail(email) {
   isValidEmail = emailPattern.test(email);
   return isValidEmail;
 }
+// 只能输入6-20个字母、数字、下划线
+export function isPasswd(s) {
+  var patrn = /^(\w){6,20}$/;
+  if (!patrn.exec(s)) return false;
+  return true;
+}

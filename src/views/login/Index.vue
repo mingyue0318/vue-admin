@@ -11,36 +11,50 @@
     <div class="login-wrap">
       <a-form
         name="custom-validation"
-        ref="formRef"
         :model="form_data"
+        ref="formRef"
         v-bind="layout"
         :rules="rules"
         @finish="handleFinish"
         @finishFailed="handleFinishFailed"
       >
-        <a-form-item has-feedback label="用户名" name="username">
+        <a-form-item has-feedback :label="$t('login.User')" name="username">
           <a-input
             v-model:value="form_data.username"
             type="account"
             autocomplete="off"
           />
         </a-form-item>
+        <a-form-item has-feedback label="Password" name="pass">
+          <a-input
+            v-model:value="form_data.pass"
+            type="password"
+            autocomplete="off"
+          />
+        </a-form-item>
 
         <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
-          <a-button type="primary" html-type="submit">Submit</a-button>
+          <a-button type="primary" html-type="submit">button </a-button>
         </a-form-item>
       </a-form>
     </div>
+    <div>
+      <router-link to="./register" class="link">注册新用户</router-link> |
+      <router-link to="./forget" class="link">忘记密码</router-link>
+    </div>
+    <a-button type="primary" @click="axios">button </a-button>
   </div>
 </template>
 
 <script>
-import { defineComponent, reactive, toRefs } from "vue";
-import { verifyPhone, validEmail } from "@/utils/tools.js";
+import { defineComponent, reactive, toRefs, getCurrentInstance } from "vue";
+import { verifyPhone, validEmail, isPasswd } from "@/utils/tools.js";
+import { getDate } from "@/api/http";
 export default defineComponent({
-  name: "login",
+  name: "Login",
   setup() {
-    let validateAccount = async (rule, value) => {
+    const { ctx, proxy } = getCurrentInstance();
+    const validateUser = async (rule, value) => {
       console.log(value);
       // console.log(formRef.value);
 
@@ -51,26 +65,37 @@ export default defineComponent({
       } else {
         return Promise.resolve();
       }
-      // if (value === "") {
-      //   return Promise.reject("Please input the password");
-      // } else {
-      //   if (formState.checkPass !== "") {
-      //     formRef.value.validateField("checkPass");
-      //   }
+    };
+    const validatePass = async (rule, value) => {
+      console.log(value);
+      // console.log(formRef.value);
 
-      //   return Promise.resolve();
-      // }
+      if (value === "") {
+        return Promise.reject("密码不可为空");
+      } else if (!isPasswd(value)) {
+        return Promise.reject("只能输入6-20个字母、数字、下划线");
+      } else {
+        return Promise.resolve();
+      }
     };
     // const formRef = ref();
     const formState = reactive({
       form_data: {
         username: "",
+        pass: "",
       },
       rules: {
         username: [
           {
             required: true,
-            validator: validateAccount,
+            validator: validateUser,
+            trigger: "change",
+          },
+        ],
+        pass: [
+          {
+            required: true,
+            validator: validatePass,
             trigger: "change",
           },
         ],
@@ -92,11 +117,22 @@ export default defineComponent({
     const handleFinishFailed = (errors) => {
       console.log(errors);
     };
+
+    const axios = () => {
+      console.log(ctx);
+      console.log(proxy);
+      getDate({
+        func: "mypublish",
+        userid: "5d8b133bb502a365450b7e03",
+        appsecret: "cPDF@2021",
+      });
+    };
     return {
       ...toRefs(formState),
       layout,
       handleFinish,
       handleFinishFailed,
+      axios,
     };
   },
 });
@@ -108,6 +144,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+  flex-direction: column;
 }
 .login-wrap {
   width: 50%;
